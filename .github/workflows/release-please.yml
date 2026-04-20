@@ -1,0 +1,59 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      publish_only:
+        description: "Skip release-please, just publish the current version to npm"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  release-please:
+    if: ${{ !inputs.publish_only }}
+    runs-on: ubuntu-latest
+    outputs:
+      # releases_created is the top-level boolean release-please-action v4
+      # sets when any release happens. (Component-prefixed keys like
+      # "meridian-plugin-pi-scrub--release_created" are NOT actually the
+      # output format — the action prefixes by PATH, not component. See
+      # meridian@fix/release-please-output-key for the full rationale.)
+      release_created: ${{ steps.release.outputs.releases_created }}
+      tag_name: ${{ steps.release.outputs['.--tag_name'] }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          # include-component-in-tag ensures tags look like
+          # `meridian-plugin-pi-scrub-v1.2.3`, which lets release-please
+          # find the previous release on each run. Without this the action
+          # recomputes from full history every cycle.
+          include-component-in-tag: true
+
+  publish:
+    needs: release-please
+    if: ${{ always() && (needs.release-please.outputs.release_created || inputs.publish_only) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
