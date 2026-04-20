@@ -1,0 +1,46 @@
+{
+  "name": "@rynfar/meridian-plugin-pi-scrub",
+  "version": "0.1.0",
+  "description": "Meridian plugin: strip pi-identifying fingerprints from the system prompt before it reaches Claude.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "meridian",
+    "meridian-plugin",
+    "pi",
+    "claude"
+  ],
+  "author": "Trevor Walker <rynfar@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rynfar/meridian-plugin-pi-scrub.git"
+  },
+  "peerDependencies": {
+    "@rynfar/meridian": ">=1.38.0"
+  },
+  "peerDependenciesMeta": {
+    "@rynfar/meridian": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}
