@@ -6,8 +6,13 @@
  * (e.g. fork/subagent replays) it produces identical output.
  */
 
-import type { Transform, RequestContext } from "@rynfar/meridian"
+import type { Transform, RequestContext } from "./types.js"
 import { scrubPiFingerprints } from "./scrub.js"
+
+// Re-export so consumers can import types without needing @rynfar/meridian
+// installed. Once meridian 1.38.0+ is released these are structurally
+// compatible with its exported types.
+export type { Transform, RequestContext } from "./types.js"
 
 const plugin: Transform = {
   name: "pi-scrub",

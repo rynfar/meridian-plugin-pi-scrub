@@ -33,7 +33,7 @@
     "url": "https://github.com/rynfar/meridian-plugin-pi-scrub.git"
   },
   "peerDependencies": {
-    "@rynfar/meridian": ">=1.38.0"
+    "@rynfar/meridian": "*"
   },
   "peerDependenciesMeta": {
     "@rynfar/meridian": {
