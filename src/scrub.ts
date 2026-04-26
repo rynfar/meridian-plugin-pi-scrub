@@ -38,6 +38,21 @@ const PI_IDENTITY_LINE =
 const PI_DOCS_BLOCK = /Pi documentation \(read only when[\s\S]*?(?=\n\n|$)/
 
 /**
+ * Anthropic-preset-style `<env>` block + its preamble. Claude Code's preset
+ * already injects this verbatim on the upstream side. If pi (or any harness
+ * sitting above pi) appends another copy of the same text, Anthropic's
+ * billing layer reads the duplicated preamble as a third-party-impersonation
+ * signal and gates opus behind Extra Usage. The opencode-scrub plugin strips
+ * the same block for the same reason; mirroring it here keeps pi flows safe
+ * even if pi's prompt picks up the pattern in a future version.
+ *
+ * Defensive: pi as of today does not emit this exact preamble, so the regex
+ * is a no-op on current pi prompts. Cheap insurance.
+ */
+const DUPLICATE_ENV_PREAMBLE_BLOCK =
+  /\nHere is some useful information about the environment you are running in:\n<env>[\s\S]*?<\/env>\n/
+
+/**
  * Replacement for the stripped identity line. Generic enough to work with any
  * provider (Anthropic's Claude Code preset covers identity upstream; for non-
  * Anthropic providers this line becomes the primary identity framing).
@@ -64,6 +79,7 @@ export function scrubPiFingerprints(systemPrompt: string): string {
   return systemPrompt
     .replace(PI_IDENTITY_LINE, GENERIC_IDENTITY)
     .replace(PI_DOCS_BLOCK, "")
+    .replace(DUPLICATE_ENV_PREAMBLE_BLOCK, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .replace(/\s+$/, "")
 }
