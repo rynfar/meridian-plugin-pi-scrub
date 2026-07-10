@@ -31,11 +31,18 @@ const PI_IDENTITY_LINE =
 
 /**
  * Pi's "Pi documentation" block. Starts with the header line and runs until
- * the next double-newline (section boundary) or end of string. Matches the
- * ~10-line block referencing pi SDK / extensions / themes / skills / TUI /
- * keybindings / prompt-templates / custom-provider / models / packages.
+ * the next double-newline (section boundary), the single-newline-separated
+ * "Current date:" tail, or end of string. Matches the ~10-line block
+ * referencing pi SDK / extensions / themes / skills / TUI / keybindings /
+ * prompt-templates / custom-provider / models / packages.
+ *
+ * The "\nCurrent date:" alternative matters when the prompt has no context
+ * files, no skills, and no appendSystemPrompt: buildSystemPrompt appends
+ * `\nCurrent date: ...\nCurrent working directory: ...` with single newlines,
+ * so without it the lazy match runs to $ and swallows those lines too.
  */
-const PI_DOCS_BLOCK = /Pi documentation \(read only when[\s\S]*?(?=\n\n|$)/
+const PI_DOCS_BLOCK =
+  /Pi documentation \(read only when[\s\S]*?(?=\n\n|\nCurrent date:|$)/
 
 /**
  * Anthropic-preset-style `<env>` block + its preamble. Claude Code's preset
