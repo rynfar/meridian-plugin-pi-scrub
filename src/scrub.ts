@@ -75,6 +75,12 @@ const GENERIC_IDENTITY =
  * - Collapses runs of 3+ newlines to 2 so section spacing stays normal
  * - Trims trailing whitespace-only lines
  *
+ * The last two only run when one of the removals above actually matched. They
+ * exist to repair the gaps those removals leave, so applying them to a prompt
+ * that had no pi fingerprint would mutate it for no reason — and index.ts
+ * registers this plugin for EVERY adapter on the explicit promise that such a
+ * prompt comes back unchanged.
+ *
  * Preserves: tools list, guidelines, date/cwd, pylon/user-appended content,
  * subagent-specific prompt body, project context files, skills block.
  *
@@ -83,10 +89,11 @@ const GENERIC_IDENTITY =
  */
 export function scrubPiFingerprints(systemPrompt: string): string {
   if (!systemPrompt) return systemPrompt
-  return systemPrompt
+  const stripped = systemPrompt
     .replace(PI_IDENTITY_LINE, GENERIC_IDENTITY)
     .replace(PI_DOCS_BLOCK, "")
     .replace(DUPLICATE_ENV_PREAMBLE_BLOCK, "\n")
-    .replace(/\n{3,}/g, "\n\n")
-    .replace(/\s+$/, "")
+  // Nothing pi-specific was found: return the input untouched.
+  if (stripped === systemPrompt) return systemPrompt
+  return stripped.replace(/\n{3,}/g, "\n\n").replace(/\s+$/, "")
 }
