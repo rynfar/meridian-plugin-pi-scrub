@@ -96,6 +96,29 @@ describe("scrubPiFingerprints", () => {
     expect(scrubPiFingerprints(clean)).toBe(clean)
   })
 
+  // index.ts registers this plugin for every adapter, so a prompt with no pi
+  // fingerprint must come back byte-identical. The fixture above happens to
+  // contain neither a 3+ newline run nor trailing whitespace, so it could not
+  // catch the unconditional cleanup passes.
+  it("is a no-op on a foreign prompt containing runs of 3+ newlines", () => {
+    const clean = "You are a helpful assistant.\n\n\n## Section\n\n\n\nBody text."
+    expect(scrubPiFingerprints(clean)).toBe(clean)
+  })
+
+  it("is a no-op on a foreign prompt with trailing whitespace", () => {
+    const clean = "You are a helpful assistant.\n\nBody text.\n\n"
+    expect(scrubPiFingerprints(clean)).toBe(clean)
+  })
+
+  it("still normalizes whitespace when a pi fingerprint was removed", () => {
+    // The cleanup passes exist to repair the gaps the removals leave behind,
+    // so they must keep running whenever a removal actually happened.
+    const out = scrubPiFingerprints(FULL_PROMPT)
+    expect(out).not.toContain("\n\n\n")
+    expect(out).not.toMatch(/\s$/)
+    expect(out).not.toContain("operating inside pi")
+  })
+
   it("is idempotent", () => {
     const once = scrubPiFingerprints(FULL_PROMPT)
     expect(scrubPiFingerprints(once)).toBe(once)
