@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/rynfar/meridian-plugin-pi-scrub/compare/meridian-plugin-pi-scrub-v0.2.0...meridian-plugin-pi-scrub-v0.2.1) (2026-07-10)
+
+
+### Bug Fixes
+
+* scrub pi fingerprints on all adapters (content-scoped) ([#4](https://github.com/rynfar/meridian-plugin-pi-scrub/issues/4)) ([65fe302](https://github.com/rynfar/meridian-plugin-pi-scrub/commit/65fe302e570044f6f115805d82b619277a8e538f))
+
 ## [0.2.0](https://github.com/rynfar/meridian-plugin-pi-scrub/compare/meridian-plugin-pi-scrub-v0.1.0...meridian-plugin-pi-scrub-v0.2.0) (2026-04-26)
 
 
