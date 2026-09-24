@@ -93,7 +93,7 @@ export function scrubPiFingerprints(systemPrompt: string): string {
     .replace(PI_IDENTITY_LINE, GENERIC_IDENTITY)
     .replace(PI_DOCS_BLOCK, "")
     .replace(DUPLICATE_ENV_PREAMBLE_BLOCK, "\n")
-  // Nothing pi-specific was found: return the input untouched.
+  // No targeted identity, documentation, or duplicate environment block matched.
   if (stripped === systemPrompt) return systemPrompt
   return stripped.replace(/\n{3,}/g, "\n\n").replace(/\s+$/, "")
 }

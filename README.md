@@ -56,11 +56,11 @@ ln -s ~/repos/meridian-plugin-pi-scrub/dist/index.js ~/.config/meridian/plugins/
 | Input | Output |
 |---|---|
 | No system prompt | unchanged |
-| System prompt without pi identity markers | unchanged (idempotent) |
+| System prompt without pi identity markers or a duplicate environment preamble | unchanged (idempotent) |
 | Pi's default system prompt | identity line swapped for generic, Pi docs block removed, spacing normalized |
 | Pi prompt + harness/user additions | pi identity stripped, all additions preserved |
 
-The plugin is scoped to `adapters: ["pi"]`, so it has no effect on requests from OpenCode, Crush, Droid, ForgeCode, or the passthrough adapter.
+The plugin runs on every adapter and checks prompt content. Prompts without a targeted block remain byte-for-byte unchanged, including their blank lines and trailing whitespace.
 
 ## Development
 
