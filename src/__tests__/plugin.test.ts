@@ -1,8 +1,16 @@
 import { describe, expect, it } from "bun:test"
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
 import plugin from "../index.js"
 import type { RequestContext } from "../types.js"
 
+const packageVersion = JSON.parse(readFileSync(join(import.meta.dir, "..", "..", "package.json"), "utf8")).version
+
 describe("pi-scrub onRequest", () => {
+  it("reports the shipped package version", () => {
+    expect(plugin.version).toBe(packageVersion)
+  })
+
   it("preserves a foreign adapter's context object and prompt bytes", () => {
     const ctx: RequestContext = {
       adapter: "opencode",

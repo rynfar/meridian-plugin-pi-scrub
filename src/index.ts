@@ -13,6 +13,7 @@
  */
 
 import type { Transform, RequestContext } from "./types.js"
+import packageMetadata from "../package.json" with { type: "json" }
 import { scrubPiFingerprints } from "./scrub.js"
 
 // Re-export so consumers can import types without needing @rynfar/meridian
@@ -22,7 +23,7 @@ export type { Transform, RequestContext } from "./types.js"
 
 const plugin: Transform = {
   name: "pi-scrub",
-  version: "0.2.0",
+  version: packageMetadata.version,
   description: "Strip pi-identifying fingerprints from the system prompt before it reaches Claude (all adapters; content-scoped)",
   // No `adapters` restriction — undefined means all adapters. The scrub is a
   // content-based no-op when no targeted block is present.
