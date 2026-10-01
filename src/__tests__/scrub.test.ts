@@ -130,3 +130,28 @@ describe("scrubPiFingerprints", () => {
     expect(scrubPiFingerprints("")).toBe("")
   })
 })
+
+describe("sectioned Pi documentation", () => {
+  const section = '<docs>\nPi documentation (read only when the user asks about pi itself):\n- Main documentation: /example/README.md\n\n- Additional docs: /example/docs\n</docs>'
+  it("removes the complete section across blank lines and preserves later project context", () => {
+    const prompt = IDENTITY + BODY + section + PROJECT_CONTEXT + TAIL
+    const out = scrubPiFingerprints(prompt)
+    expect(out).not.toContain('<docs>')
+    expect(out).not.toContain('</docs>')
+    expect(out).not.toContain('Additional docs:')
+    expect(out).toContain(PROJECT_CONTEXT.trim())
+    expect(out).toContain('Current date:')
+    expect(scrubPiFingerprints(out)).toBe(out)
+  })
+  it("preserves foreign documentation sections byte for byte", () => {
+    const foreign = '<docs>\nProject documentation\n\nKeep all this.\n</docs>\n\n\n'
+    expect(scrubPiFingerprints(foreign)).toBe(foreign)
+  })
+  it("keeps adjacent foreign docs and project instructions", () => {
+    const foreign = '<docs>\nProject documentation to keep.\n</docs>'
+    const out = scrubPiFingerprints(foreign + '\n\n' + section + PROJECT_CONTEXT)
+    expect(out).toContain(foreign)
+    expect(out).toContain(PROJECT_CONTEXT.trim())
+    expect(out).not.toContain('Additional docs:')
+  })
+})

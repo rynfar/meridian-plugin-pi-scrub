@@ -41,6 +41,11 @@ const PI_IDENTITY_LINE =
  * `\nCurrent date: ...\nCurrent working directory: ...` with single newlines,
  * so without it the lazy match runs to $ and swallows those lines too.
  */
+// Sectioned Pi prompts may contain blank lines within documentation. Match the
+// Pi header at the start of this section; leave other <docs> sections intact.
+const PI_DOCS_SECTION =
+  /<docs>\s*Pi documentation \(read only when[\s\S]*?<\/docs>/
+
 const PI_DOCS_BLOCK =
   /Pi documentation \(read only when[\s\S]*?(?=\n\n|\nCurrent date:|$)/
 
@@ -91,6 +96,7 @@ export function scrubPiFingerprints(systemPrompt: string): string {
   if (!systemPrompt) return systemPrompt
   const stripped = systemPrompt
     .replace(PI_IDENTITY_LINE, GENERIC_IDENTITY)
+    .replace(PI_DOCS_SECTION, "")
     .replace(PI_DOCS_BLOCK, "")
     .replace(DUPLICATE_ENV_PREAMBLE_BLOCK, "\n")
   // No targeted identity, documentation, or duplicate environment block matched.
