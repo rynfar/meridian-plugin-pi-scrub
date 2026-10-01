@@ -74,3 +74,10 @@ The built plugin is a single ES module at `dist/index.js` with `dist/index.d.ts`
 ## License
 
 MIT
+
+Pi's sectioned prompts are supported: a `<docs>` block beginning with the Pi
+documentation header is removed as a whole, including internal blank lines and
+both tags. Other documentation blocks and later project instructions remain.
+For a manual real-client regression gate, see
+[the retained Pi 0.87.1 evidence](docs/evidence/13-sectioned-pi-docs.md) and
+`scripts/e2e-pi-sectioned-docs.mjs`.
